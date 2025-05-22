@@ -60,7 +60,10 @@ Rscript 04b_cli.R uniprot_ids.csv output_plot.png --locations Nucleus Cytoplasm
 
 ## Project Structure
 
+- `01_rmarkdown.Rmd` – Example RMarkdown document for interactive, documented analysis.
+- `02_script.R` – Monolithic R script: all code in one file, executed sequentially.
 - `03_refactored.R` – Modular, well-documented R script for protein network analysis.
+- `04a_generate_uniprot_ids.R` – Script to generate a CSV file with random UniProt IDs.
 - `04b_cli.R` – Command-line interface for flexible, reproducible analysis.
 - `code_examples.R` – Illustrative code snippets for R best practices and testing.
 - `uniprot_ids.csv` – Example input file with UniProt IDs.
