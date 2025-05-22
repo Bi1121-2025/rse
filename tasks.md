@@ -83,7 +83,7 @@ Review `code_examples.R` for best practices in R coding and testing.
 If you need help with any of the tasks or run into issues:
 
 #### Ask for help
-Visit the [GitHub repository](https://github.com/your-org/your-repo) and [create an issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/creating-an-issue) describing your problem or question.
+Visit the [GitHub repository](https://github.com/Bi1121-2025/rse) and [create an issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/creating-an-issue) describing your problem or question.
 
 - See the [GitHub documentation on creating issues](https://docs.github.com/en/issues/tracking-your-work-with-issues/creating-an-issue) for a step-by-step guide.
 - You can also check [existing issues](https://docs.github.com/en/issues/tracking-your-work-with-issues/viewing-your-issues) to see if your question has already been answered.
