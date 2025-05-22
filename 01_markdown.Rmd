@@ -1,0 +1,229 @@
+---
+title: "solution"
+output: html_document
+---
+
+```{r}
+# We need to install devtools in order to install our package from GitHub
+# install.packages('devtools')
+
+# Now we can install the 'tidybiology' package from GitHub
+devtools::install_github("hirscheylab/tidybiology")
+
+# Let's load the tidybiology package and see which datasets are there
+library('tidybiology')
+data(package = 'tidybiology')
+
+# We will work with the 'proteins' dataset
+data(proteins)
+```
+
+
+```{r}
+# Let's perform some simple data checks.
+# Let's see if the sequence length is always determined correctly
+
+# How can we check the first entry?
+nchar(proteins$sequence[1]) == proteins$length[1]
+
+# Through broadcasting we can actually check this for everything as well
+all(nchar(proteins$sequence) == proteins$length)
+
+# So far so good. Which other things should we still control?
+# Check for NA values - how should we deal with them?
+any(is.na(proteins))
+
+# So we have some NA values. But where?
+head(which(is.na(proteins), arr.ind=TRUE))
+na_idx <- which(is.na(proteins), arr.ind=TRUE)
+na_idx <- data.frame(which(is.na(proteins), arr.ind=TRUE))
+
+# Let's see how our NA values are distributed
+hist(na_idx$col, breaks = seq(0,8))
+
+# Seems like many of the alternative names are NA - let's maybe remove those columns
+prot_cleaned <- dplyr::select(proteins, -c('gene_name_alt','protein_name_alt'))
+which(is.na(prot_cleaned), arr.ind=TRUE)
+
+# Okay, we have much less now. Now let's drop those remaining NA rows to not mess with our Analyses
+prot_cleaned_no_na <- tidyr::drop_na(prot_cleaned)
+
+# ups, seems like we need to install 'tidyr'
+# install.packages('tidyr')
+prot_cleaned_no_na <- tidyr::drop_na(prot_cleaned)
+```
+
+```{r}
+# Alright, we did some preliminary cleaning. Let's have a look at the data.
+
+# Let's check the relationship between length and mass
+plot(prot_cleaned_no_na$length, prot_cleaned_no_na$mass)
+
+# 
+```
+
+```{r}
+# Let's get some more interesting information from https://www.uniprot.org/
+
+# install.packages('UniprotR')
+
+# Now let's get some protein interaction data for all our proteins
+# prot_inter <- UniprotR::GetProteinInteractions(prot_cleaned_no_na$uniprot_id)
+
+# Okay we get some errors. Let's install 'Biostrings'
+# install.packages('Biostrings') - if this works for you, great
+
+# Otherwise we need to go via bioconductor
+# install.packages('BiocManager')
+# BiocManager::install('Biostrings')
+
+# lets try again
+# prot_inter <- UniprotR::GetProteinInteractions(prot_cleaned_no_na$uniprot_id)
+
+# Missing 'GenomicAlignments'
+# BiocManager::install('GenomicAlignments')
+
+# Let's create a subset of protein ids
+subset <- dplyr::slice_sample(prot_cleaned_no_na, n=10)
+
+# Okay, now lets retrieve the protein interactions, functions and locations
+interactions <- UniprotR::GetProteinInteractions(subset$uniprot_id)
+functions <- UniprotR::GetProteinFunction(subset$uniprot_id)
+```
+
+```{r}
+# Now lets combine all our information
+
+# Let's reintroduce the uniprot_id column
+interactions$uniprot_id <- rownames(interactions)
+functions$uniprot_id <- rownames(functions)
+
+# Now we join the dataframes together
+datasets <- list(subset, interactions, functions)
+merged <- plyr::join_all(datasets, by='uniprot_id')
+```
+
+```{r}
+edges <- merged |>
+  dplyr::mutate(targets = strsplit(as.character(Interacts.with), ";")) |>
+  tidyr::unnest(targets) |>
+  dplyr::mutate(targets = trimws(targets)) |>
+  dplyr::select(uniprot_id, target = targets) |>
+  tidyr::drop_na() |>
+  dplyr::rename('from' = 'uniprot_id', 'to' = 'target')
+
+all_ids <- unique(c(edges$from, edges$to))
+
+# Lets collect all the locations
+locations <- UniprotR::GetSubcellular_location(all_ids)
+locations$uniprot_id <- rownames(locations)
+```
+
+```{r}
+# Let's have a look at the locations
+head(locations$Subcellular.location..CC.)
+
+locations <- locations |>
+  dplyr::mutate(loc = trimws(strsplit(Subcellular.location..CC., "[.]")))
+```
+
+
+```{r}
+# Okay, we need some simpler locations
+
+possible_locations <- c('Nucleus', 'Cytoplasm', 'Vesicule', 'Mitochondrion')
+
+head(locations$loc[1])
+head(grepl('Nucleus', locations$loc))
+
+result <- sapply(possible_locations, function(x) grepl(x, locations$loc))
+
+head(result)
+
+locations <- locations |> dplyr::select(uniprot_id, Subcellular.location..CC.) |> dplyr::bind_cols(result)
+
+```
+
+
+```{r}
+graph <- igraph::graph_from_data_frame(
+  edges,
+  vertices = locations,
+  directed = FALSE)
+
+ggraph(graph, layout = "fr") + 
+  geom_edge_link() + 
+  geom_node_point(aes(size = igraph::degree(graph)), color = "tomato") +
+  geom_node_text(aes(label = name), repel = TRUE) +
+  theme_void()
+```
+
+
+
+```{r}
+# Merge interaction, localization, and function data
+combined_data <- edges |>
+  dplyr::left_join(locations, by = c("from" = "uniprot_id")) |>
+  dplyr::left_join(locations, by = c("to" = "uniprot_id"), suffix = c("_from", "_to"))
+```
+
+```{r}
+# Lets determine the colocations
+
+colocated <- combined_data$Nucleus_from == combined_data$Nucleus_to  |
+  combined_data$Cytoplasm_from == combined_data$Cytoplasm_to
+```
+
+```{r}
+# Lets get a list of all possible combinations to get our coloring for the graph
+
+locations$color <- as.factor(
+  as.integer(
+  interaction(
+    locations$Nucleus, locations$Cytoplasm, locations$Vesicule, locations$Mitochondrion)))
+
+```
+
+
+```{r}
+graph <- igraph::graph_from_data_frame(
+  edges,
+  vertices = locations,
+  directed = FALSE)
+```
+
+
+```{r}
+# Plot with co-localization-colored edges
+ggraph(graph, layout = "fr") +
+  # Color edges based on whether connected proteins share localization
+  geom_edge_link(
+    aes(color = colocated),
+    width = 0.5, alpha = 0.6
+  ) +
+  # Color nodes by localization
+  geom_node_point(
+    aes(color = color),
+    size = 3,
+    show.legend = TRUE
+  ) +
+  # Add protein labels
+  geom_node_text(
+    aes(label = name),
+    repel = TRUE,
+    size = 3,
+  ) +
+  # Customize colors
+  scale_edge_color_manual(
+    values = c("grey80", "tomato"),  # FALSE/TRUE colors
+    labels = c("Different", "Same"),
+    name = "Co-localization"
+  ) +
+  labs(title = "Protein Interaction Network Colored by Localization") +
+  theme_void()
+```
+
+```{r}
+ggsave("protein_network_plot.png", plot = plot_obj, width = 8, height = 6, dpi = 300)
+```
+
