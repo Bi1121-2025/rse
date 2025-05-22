@@ -4,6 +4,10 @@
 
 In this project, you will explore and analyze protein interaction networks using R. The repository demonstrates best practices in research software engineering, including modular code, explicit data handling, command-line interfaces, and unit testing.
 
+Understanding **protein interactions** is fundamental in biology because proteins rarely act alone: they form complex networks to carry out cellular processes. By analyzing protein interaction networks, researchers can identify key proteins (hubs), discover new pathways, and predict the effects of perturbations such as mutations or drug treatments.
+
+**Protein colocalization**—the presence of two or more proteins in the same subcellular compartment—can provide evidence for direct or indirect interactions and functional relationships. Studying colocalization helps to filter biologically relevant interactions from large datasets and can reveal how cellular context influences protein function.
+
 You will work through several stages, each introducing new aspects of research software engineering:
 
 ### Stages
@@ -91,7 +95,7 @@ Visit the [GitHub repository](https://github.com/Bi1121-2025/rse) and [create an
 #### Find solutions
 Example solutions for each task and stage are provided in the repository files:
 
-- `02_script.R`, `03_refactored.R`, `04b_cli.R`, and `code_examples.R`
+-  `01_rmarkdown.Rmd`, `02_script.R`, `03_refactored.R`, `04b_cli.R`, and `code_examples.R`
 
 Review these files to compare your approach or to get unstuck.
 
