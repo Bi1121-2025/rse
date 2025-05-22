@@ -19,13 +19,19 @@ This repository contains code and examples for the **Bi1121c - Introduction to R
 - R (>= 4.0)
 - R packages: `tidybiology`, `dplyr`, `tidyr`, `plyr`, `igraph`, `ggraph`, `ggplot2`, `UniprotR`, `argparse`, `testthat`
 
-Install required packages in R:
+You will need several R packages for this project. Most can be installed from CRAN, but some (such as Biostrings and GenomicAlignments) must be installed from Bioconductor.
 
 ```r
+# Install CRAN packages
 install.packages(c(
-  "tidybiology", "dplyr", "tidyr", "plyr", "igraph", 
+  "devtools", "tidybiology", "dplyr", "tidyr", "plyr", "igraph",
   "ggraph", "ggplot2", "UniprotR", "argparse", "testthat"
 ))
+
+# Install Bioconductor packages
+if (!requireNamespace("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+BiocManager::install(c("Biostrings", "GenomicAlignments"))
 ```
 
 ### Example Usage
