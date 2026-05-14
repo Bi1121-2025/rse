@@ -4,7 +4,7 @@ This document summarizes tools, platforms, and best practices that support the c
 
 ---
 
-## ᴍ Findable
+## Findable
 
 | Resource / Tool              | Type                | Purpose                                                                                      | Usage Snippet / Example                                 |
 | ---------------------------- | ------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
@@ -19,7 +19,7 @@ This document summarizes tools, platforms, and best practices that support the c
 
 ---
 
-## ᴠ Accessible
+## Accessible
 
 | Resource / Tool                   | Type              | Purpose                                                                       | Usage Snippet / Example                                       |
 | --------------------------------- | ----------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------- |
@@ -35,7 +35,7 @@ This document summarizes tools, platforms, and best practices that support the c
 
 ---
 
-## ᴊ Interoperable
+## Interoperable
 
 | Resource / Tool            | Type               | Purpose                                                                            | Usage Snippet / Example                           |
 | -------------------------- | ------------------ | ---------------------------------------------------------------------------------- | ------------------------------------------------- |
@@ -49,7 +49,7 @@ This document summarizes tools, platforms, and best practices that support the c
 
 ---
 
-## ᴜ Reusable
+## Reusable
 
 | Resource / Tool       | Type               | Purpose                                                                            | Usage Snippet / Example                                               |
 | --------------------- | ------------------ | ---------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
@@ -62,7 +62,7 @@ This document summarizes tools, platforms, and best practices that support the c
 
 ---
 
-## 🛠️ Clean, Testable Software Development
+## Clean, Testable Software Development
 
 | Tip / Practice                         | Tool / Resource               | Purpose / Benefit                                                                | Usage Snippet / Example                                                 |
 | -------------------------------------- | ----------------------------- | -------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
