@@ -23,7 +23,6 @@ suppressPackageStartupMessages({
   library(ggraph)
   library(ggplot2)
   library(UniprotR)
-  library(argparse)
 })
 
 # Load proteins dataset
@@ -45,7 +44,7 @@ plot(prot_cleaned_no_na$length, prot_cleaned_no_na$mass)
 
 # Create a subset of protein ids
 set.seed(42)
-subset <- dplyr::slice_sample(prot_cleaned_no_na, n=20)
+subset <- read.csv('uniprot_ids.csv')
 
 # Retrieve protein interactions, functions, and locations
 interactions <- UniprotR::GetProteinInteractions(subset$uniprot_id)
