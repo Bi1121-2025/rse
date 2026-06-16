@@ -74,7 +74,7 @@ Rscript 04b_cli.R uniprot_ids.csv output_plot.png --locations Nucleus Cytoplasm
 Contributions and suggestions are welcome! Please open an issue or submit a pull request.
 
 ## License
-
+This project is licensed under the MIT license and is available [here](LICENSE).
 This project is for educational purposes. See course materials for details.
 
 ------------------------------------------------------------------------
